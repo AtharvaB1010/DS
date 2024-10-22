@@ -1,0 +1,105 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_VERTICES 100
+
+// Node structure representing an adjacency list node.
+typedef struct node {
+    int label;
+    struct node *link;
+} NODE;
+
+// Graph structure containing an array of adjacency lists.
+typedef struct graph {
+    NODE *gptr[MAX_VERTICES];
+} GRAPH;
+
+// Function to create a graph using adjacency matrix input.
+void create_graph(GRAPH *g) {
+    int n, i, j;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &n);
+
+    // Initialize all adjacency lists to NULL.
+    for (i = 0; i < n; i++) {
+        g->gptr[i] = NULL;
+    }
+
+    printf("Enter the adjacency matrix:\n");
+    for (i = 0; i < n; i++) {
+        for (j = 0; j < n; j++) {
+            int edge;
+            scanf("%d", &edge);
+
+            if (edge == 1) {
+                NODE *newNode = (NODE *)malloc(sizeof(NODE));
+                newNode->label = j;
+                newNode->link = g->gptr[i];
+                g->gptr[i] = newNode;
+            }
+        }
+    }
+}
+
+// DFS traversal using adjacency lists.
+void DFS_LL(GRAPH *g, int v, int visited[]) {
+    visited[v] = 1;
+    printf("%d ", v);
+
+    NODE *current = g->gptr[v];
+    while (current != NULL) {
+        int u = current->label;
+        if (!visited[u]) {
+            DFS_LL(g, u, visited);
+        }
+        current = current->link;
+    }
+}
+
+// BFS traversal using adjacency lists.
+void BFS_LL(GRAPH *g, int start, int visited[]) {
+    int queue[MAX_VERTICES], front = 0, rear = 0;
+    visited[start] = 1;
+    queue[rear++] = start;
+
+    while (front < rear) {
+        int v = queue[front++];
+        printf("%d ", v);
+
+        NODE *current = g->gptr[v];
+        while (current != NULL) {
+            int u = current->label;
+            if (!visited[u]) {
+                visited[u] = 1;
+                queue[rear++] = u;
+            }
+            current = current->link;
+        }
+    }
+}
+
+int main() {
+    GRAPH g;
+    int visited[MAX_VERTICES] = {0};
+    int start_vertex;
+
+    create_graph(&g);
+
+    printf("Enter the starting vertex for DFS: ");
+    scanf("%d", &start_vertex);
+    printf("DFS traversal starting from vertex %d: ", start_vertex);
+    DFS_LL(&g, start_vertex, visited);
+
+    // Reset visited array for BFS traversal.
+    for (int i = 0; i < MAX_VERTICES; i++) {
+        visited[i] = 0;
+    }
+
+    printf("\nEnter the starting vertex for BFS: ");
+    scanf("%d", &start_vertex);
+    printf("BFS traversal starting from vertex %d: ", start_vertex);
+    BFS_LL(&g, start_vertex, visited);
+
+    return 0;
+}
