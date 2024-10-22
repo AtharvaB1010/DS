@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <conio.h>
+#include <malloc.h>
+#include <stdlib.h>
+
+// Define the structure for a node in the binary search tree
+struct Node {
+    int data;
+    struct Node *left, *right;
+};
+
+// Function to create a new node
+struct Node* createNode(int value) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = value;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a node in the binary search tree
+struct Node* insert(struct Node* root, int value) {
+    // If the tree is empty, return a new node
+    if (root == NULL) return createNode(value);
+
+    // Otherwise, recur down the tree
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+
+    // Return the unchanged root pointer
+    return root;
+}
+
+// Function for inorder traversal (Left, Root, Right)
+void inorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        inorderTraversal(root->left);
+        printf("%d ", root->data);
+        inorderTraversal(root->right);
+    }
+}
+
+// Function for preorder traversal (Root, Left, Right)
+void preorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        printf("%d ", root->data);
+        preorderTraversal(root->left);
+        preorderTraversal(root->right);
+    }
+}
+
+// Function for postorder traversal (Left, Right, Root)
+void postorderTraversal(struct Node* root) {
+    if (root != NULL) {
+        postorderTraversal(root->left);
+        postorderTraversal(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+// Main function to demonstrate the operations
+int main() {
+    struct Node* root = NULL;
+    int choice, value;
+
+    while (1) {
+        printf("\nBinary Search Tree Operations: \n");
+        printf("1. Insert\n");
+        printf("2. Display Inorder Traversal\n");
+        printf("3. Display Preorder Traversal\n");
+        printf("4. Display Postorder Traversal\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter value to insert: ");
+                scanf("%d", &value);
+                root = insert(root, value);
+                printf("%d inserted.\n", value);
+                break;
+            case 2:
+                printf("Inorder Traversal: ");
+                inorderTraversal(root);
+                printf("\n");
+                break;
+            case 3:
+                printf("Preorder Traversal: ");
+                preorderTraversal(root);
+                printf("\n");
+                break;
+            case 4:
+                printf("Postorder Traversal: ");
+                postorderTraversal(root);
+                printf("\n");
+                break;
+            case 5:
+                exit(0);
+            default:
+                printf("Invalid choice! Please enter again.\n");
+        }
+    }
+    return 0;
+}
+
